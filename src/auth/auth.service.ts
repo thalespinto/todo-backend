@@ -4,6 +4,7 @@ import { User } from '../users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { CreateUserDto } from '../users/dto/create-user.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,8 @@ export class AuthService {
 
   async register(@Body() createUserDto: CreateUserDto) {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
-    return await this.usersService.createUser(createUserDto);
+    const user = await this.usersService.createUser(createUserDto);
+    return plainToClass(User, user)
   }
 
   async signIn(user: Pick<User, 'email' | 'password'>) {
