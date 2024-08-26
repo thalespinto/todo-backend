@@ -14,16 +14,16 @@ export class User {
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
-  @Column(
-    'text',
-    { array: true, name: 'roles', nullable: false, default: ["user"] }
-  )
+  @Column({
+    name: 'roles',
+    type: 'json',
+    nullable: false
+  })
   roles: string[];
 
-  @CreateDateColumn({ name: 'created_at', nullable: false })
-  createdAt: string;
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
+  createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at', nullable: false })
-  updatedAt: string;
-
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp', nullable: false })
+  updatedAt: Date;
 }
