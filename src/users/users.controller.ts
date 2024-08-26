@@ -30,7 +30,7 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto
   ): Promise<Response> {
     await this.usersService.update(+id, updateUserDto);
-    return response.status(HttpStatus.ACCEPTED);
+    return response.status(HttpStatus.ACCEPTED).send();
   }
 
 }
