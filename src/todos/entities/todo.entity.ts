@@ -13,8 +13,8 @@ export class Todo {
       nullable: false,
       onDelete: 'CASCADE'
     })
-  @JoinColumn({ name: 'idUser' })
-  idUser: User;
+  @JoinColumn({ name: 'user' })
+  user: User;
 
   @Column({ length: 255, nullable: false })
   title: string;

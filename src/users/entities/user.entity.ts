@@ -17,7 +17,7 @@ export class User {
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
-  @OneToMany(() => Todo, todo => todo.idUser)
+  @OneToMany(() => Todo, todo => todo.user)
   todos: Todo[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
