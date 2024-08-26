@@ -8,6 +8,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class UsersService {
@@ -22,11 +23,8 @@ export class UsersService {
     if(emailAlreadyCreated) {
       throw new BadRequestException('Email already exists!');
     }
-    return await this.usersRepository.save(createUserDto);
-  }
 
-  async findAll(): Promise<User[]> {
-    return await this.usersRepository.find();
+    return await this.usersRepository.save(createUserDto);
   }
 
   async findOneByEmail(email: string): Promise<User> {
@@ -40,7 +38,7 @@ export class UsersService {
     const user = await this.usersRepository.findOneBy({ id });
     if(!user) throw new NotFoundException('User not found');
 
-    return user;
+    return plainToClass(User, user);
   }
 
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {

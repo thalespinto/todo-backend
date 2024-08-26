@@ -3,7 +3,7 @@ import {
   Controller,
   Get, HttpStatus,
   Param,
-  Patch,
+  Patch, Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,25 +14,23 @@ import { Response, response } from 'express';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get()
-  async findAll(): Promise<Response<User[]>> {
-    const users = this.usersService.findAll();
-    return response.status(HttpStatus.ACCEPTED).json(users);
-  }
-
   @Get(':id')
-  async findOneById(@Param('id') id: string): Promise<Response<User>> {
+  async findOneById(
+    @Res() response: Response,
+    @Param('id') id: string
+  ): Promise<Response<User>> {
     const user = await this.usersService.findOneById(+id);
-    return response.status(HttpStatus.ACCEPTED).json(user)
+    return response.status(HttpStatus.OK).json(user)
   }
 
   @Patch(':id')
   async update(
+    @Res() response: Response,
     @Param('id') id: string,
     @Body() updateUserDto: UpdateUserDto
   ): Promise<Response> {
     await this.usersService.update(+id, updateUserDto);
-    return response.status(HttpStatus.ACCEPTED);
+    return response.status(HttpStatus.ACCEPTED).send();
   }
 
 }
