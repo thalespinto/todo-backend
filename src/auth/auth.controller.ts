@@ -9,6 +9,7 @@ import { Public } from '../decorators/public.decorator';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @Post('register')
   async register(
     @Res() response: Response,
