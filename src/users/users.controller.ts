@@ -8,7 +8,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
-import { Response, response } from 'express';
+import { Response } from 'express';
 
 @Controller('users')
 export class UsersController {
