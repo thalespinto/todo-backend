@@ -14,13 +14,6 @@ export class User {
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
 
-  @Column({
-    name: 'roles',
-    type: 'json',
-    nullable: false
-  })
-  roles: string[];
-
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
   createdAt: Date;
 

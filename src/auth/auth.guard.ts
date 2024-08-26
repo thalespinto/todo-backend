@@ -1,6 +1,6 @@
 import {
   CanActivate,
-  ExecutionContext, ForbiddenException,
+  ExecutionContext,
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
@@ -8,9 +8,7 @@ import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
-import { Role, ROLES_KEY } from '../decorators/roles.decorator';
 import { UsersService } from '../users/users.service';
-import { User } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
@@ -37,18 +35,7 @@ export class AuthGuard implements CanActivate {
       throw new UnauthorizedException();
     }
 
-    if(this.meetsRequiredRoles(request['user'], context)) return true;
-    else throw new ForbiddenException();
-  }
-
-  private meetsRequiredRoles(user: User, context: ExecutionContext): boolean {
-    const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
-      context.getHandler(),
-      context.getClass(),
-    ]);
-    if(!requiredRoles) return true;
-
-    return requiredRoles.some((role) => user.roles?.includes(role));
+    return true;
   }
 
   private isPublic(context: ExecutionContext): boolean {

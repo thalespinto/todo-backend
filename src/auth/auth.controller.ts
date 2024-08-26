@@ -4,13 +4,11 @@ import { CreateUserDto } from '../users/dto/create-user.dto';
 import { AuthService } from './auth.service';
 import { User } from '../users/entities/user.entity';
 import { Public } from '../decorators/public.decorator';
-import { Role, Roles } from '../decorators/roles.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Roles(Role.Admin)
   @Post('register')
   async register(
     @Res() response: Response,

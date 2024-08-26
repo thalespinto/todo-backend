@@ -22,6 +22,7 @@ export class UsersService {
     if(emailAlreadyCreated) {
       throw new BadRequestException('Email already exists!');
     }
+
     return await this.usersRepository.save(createUserDto);
   }
 
