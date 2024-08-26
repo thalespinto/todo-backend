@@ -20,7 +20,6 @@ export class AuthService {
   async signIn(user: Pick<User, 'email' | 'password'>) {
     const _user = await this.usersService.findOneByEmail(user.email);
     if (!(await bcrypt.compare(user.password, _user.password))) {
-      console.log("diferente")
       throw new UnauthorizedException();
     }
 
