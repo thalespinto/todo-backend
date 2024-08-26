@@ -1,5 +1,6 @@
-import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, OneToMany } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Todo } from '../../todos/entities/todo.entity';
 
 @Entity('users')
 export class User {
@@ -15,6 +16,9 @@ export class User {
   @Exclude()
   @Column({ name: 'password', length: 255, nullable: false })
   password: string;
+
+  @OneToMany(() => Todo, todo => todo.idUser)
+  todos: Todo[];
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamp', nullable: false })
   createdAt: Date;
