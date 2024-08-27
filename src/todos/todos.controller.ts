@@ -18,8 +18,11 @@ import { Response } from 'express';
 import { PageOptionsDto } from '../utils/pagination/page-options.dto';
 import { PageDto } from '../utils/pagination/page.dto';
 import { Todo } from './entities/todo.entity';
+import { ApiTags } from '@nestjs/swagger';
+import { ApiPaginatedResponse } from '../decorators/api-tags.decorator';
 
 @Controller('todos')
+@ApiTags('Todos')
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
@@ -34,6 +37,7 @@ export class TodosController {
   }
 
   @Get(':userId')
+  @ApiPaginatedResponse(Todo)
   async findAllByUserId(
     @Res() response: Response,
     @Query() pageOptionsDto: PageOptionsDto,
