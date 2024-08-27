@@ -1,4 +1,5 @@
-import { IsBoolean, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsDate, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateTodoDto {
 
@@ -12,9 +13,11 @@ export class CreateTodoDto {
   readonly description: string;
 
   @IsBoolean()
-  readonly done: boolean;
+  @IsOptional()
+  readonly done?: boolean;
 
   @IsDate()
+  @Type(() => Date)
   readonly deadline: Date;
 
 }
