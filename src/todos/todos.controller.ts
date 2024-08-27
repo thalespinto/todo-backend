@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
   Res,
-  HttpStatus,
+  HttpStatus, Query,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -15,6 +15,9 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { User } from '../decorators/user.decorator';
 import { User as UserEntity } from '../users/entities/user.entity';
 import { Response } from 'express';
+import { PageOptionsDto } from '../utils/pagination/page-options.dto';
+import { PageDto } from '../utils/pagination/page.dto';
+import { Todo } from './entities/todo.entity';
 
 @Controller('todos')
 export class TodosController {
@@ -33,10 +36,12 @@ export class TodosController {
   @Get(':userId')
   async findAllByUserId(
     @Res() response: Response,
+    @Query() pageOptionsDto: PageOptionsDto,
     @Param('userId') id: string,
     @User() user: UserEntity,
-  ) {
-    const todos = await this.todosService.findAllByUserId(+id, user.id);
+  ): Promise<Response<PageDto<Todo>>> {
+    const todos =
+      await this.todosService.findAllByUserId(pageOptionsDto, +id, user.id);
     return response.status(HttpStatus.OK).json(todos);
   }
 

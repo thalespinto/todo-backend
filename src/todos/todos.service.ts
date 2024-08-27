@@ -5,6 +5,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
 import { Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
+import { PageOptionsDto } from '../utils/pagination/page-options.dto';
+import { PageMetaDto } from '../utils/pagination/page-meta.dto';
+import { PageDto } from '../utils/pagination/page.dto';
 
 @Injectable()
 export class TodosService {
@@ -31,13 +34,25 @@ export class TodosService {
     return await this.todosRepository.save(todo);
   }
 
-  async findAllByUserId(userId: number, requestingUser: number): Promise<Todo[]> {
+  async findAllByUserId(
+    pageOptionsDto: PageOptionsDto,
+    userId: number,
+    requestingUser: number): Promise<PageDto<Todo>> {
     if(requestingUser !== userId )
       throw new BadRequestException("Trying to see another user todos.");
 
-    return await this.todosRepository.find({
-      where: { user: { id: userId } },
-    });
+    const queryBuilder = this.todosRepository.createQueryBuilder("todos")
+    queryBuilder.
+      orderBy(pageOptionsDto.orderBy, pageOptionsDto.order)
+      .skip(pageOptionsDto.skip)
+      .take(pageOptionsDto.take)
+
+    const itemCount = await queryBuilder.getCount();
+    const { entities } = await queryBuilder.getRawAndEntities()
+
+    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+
+    return new PageDto(entities, pageMetaDto)
   }
 
   async update(
