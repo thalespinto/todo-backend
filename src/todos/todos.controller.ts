@@ -15,11 +15,11 @@ import { UpdateTodoDto } from './dto/update-todo.dto';
 import { User } from '../decorators/user.decorator';
 import { User as UserEntity } from '../users/entities/user.entity';
 import { Response } from 'express';
-import { PageOptionsDto } from '../utils/pagination/page-options.dto';
 import { PageDto } from '../utils/pagination/page.dto';
 import { Todo } from './entities/todo.entity';
 import { ApiTags } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../decorators/api-tags.decorator';
+import { TodoQueryOptionsDto } from './dto/query-options.dto';
 
 @Controller('todos')
 @ApiTags('Todos')
@@ -36,16 +36,15 @@ export class TodosController {
     return response.status(HttpStatus.CREATED).json(createdTodo);
   }
 
-  @Get(':userId')
+  @Get()
   @ApiPaginatedResponse(Todo)
   async findAllByUserId(
     @Res() response: Response,
-    @Query() pageOptionsDto: PageOptionsDto,
-    @Param('userId') id: string,
+    @Query() QueryDto: TodoQueryOptionsDto,
     @User() user: UserEntity,
   ): Promise<Response<PageDto<Todo>>> {
     const todos =
-      await this.todosService.findAllByUserId(pageOptionsDto, +id, user.id);
+      await this.todosService.findAllByUserId(QueryDto, user.id);
     return response.status(HttpStatus.OK).json(todos);
   }
 

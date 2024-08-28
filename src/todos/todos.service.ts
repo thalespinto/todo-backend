@@ -8,6 +8,7 @@ import { UsersService } from '../users/users.service';
 import { PageOptionsDto } from '../utils/pagination/page-options.dto';
 import { PageMetaDto } from '../utils/pagination/page-meta.dto';
 import { PageDto } from '../utils/pagination/page.dto';
+import { TodoQueryOptionsDto } from './dto/query-options.dto';
 
 @Injectable()
 export class TodosService {
@@ -22,10 +23,8 @@ export class TodosService {
     createTodoDto: CreateTodoDto,
     requestingUser: number
   ): Promise<Todo> {
-    if(requestingUser !== createTodoDto.user)
-      throw new BadRequestException("Trying to create todo for another user.");
 
-    const user = await this.usersService.findOneById(createTodoDto.user);
+    const user = await this.usersService.findOneById(requestingUser);
     const todo = this.todosRepository.create({
       ...createTodoDto,
       user,
@@ -35,22 +34,26 @@ export class TodosService {
   }
 
   async findAllByUserId(
-    pageOptionsDto: PageOptionsDto,
-    userId: number,
+    queryOptions: TodoQueryOptionsDto,
     requestingUser: number): Promise<PageDto<Todo>> {
-    if(requestingUser !== userId )
-      throw new BadRequestException("Trying to see another user todos.");
 
     const queryBuilder = this.todosRepository.createQueryBuilder("todos")
-    queryBuilder.
-      orderBy(pageOptionsDto.orderBy, pageOptionsDto.order)
-      .skip(pageOptionsDto.skip)
-      .take(pageOptionsDto.take)
+    const filters = {
+      user: requestingUser,
+    }
+    if(queryOptions.done) filters['done'] = queryOptions.done
+    console.log(filters)
+    queryBuilder
+      .where(filters)
+      .orderBy(queryOptions.orderBy, queryOptions.order)
+      .skip(queryOptions.skip)
+      .take(queryOptions.take)
 
     const itemCount = await queryBuilder.getCount();
     const { entities } = await queryBuilder.getRawAndEntities()
 
-    const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
+    const pageMetaDto =
+      new PageMetaDto({ itemCount, pageOptionsDto: queryOptions });
 
     return new PageDto(entities, pageMetaDto)
   }
