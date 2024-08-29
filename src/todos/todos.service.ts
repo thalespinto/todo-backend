@@ -42,7 +42,6 @@ export class TodosService {
     }
     if ('done' in queryOptions) filters['done'] = queryOptions.done;
     if ('title' in queryOptions) {
-      console.log("tem", queryOptions.title);
       const title = queryOptions.title;
       queryBuilder.where({ title: Like(`%${title}%`)  });
     }
