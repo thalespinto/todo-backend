@@ -3,9 +3,8 @@ import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Todo } from './entities/todo.entity';
-import { Repository } from 'typeorm';
+import { Like, Repository } from 'typeorm';
 import { UsersService } from '../users/users.service';
-import { PageOptionsDto } from '../utils/pagination/page-options.dto';
 import { PageMetaDto } from '../utils/pagination/page-meta.dto';
 import { PageDto } from '../utils/pagination/page.dto';
 import { TodoQueryOptionsDto } from './dto/query-options.dto';
@@ -41,10 +40,14 @@ export class TodosService {
     const filters = {
       user: requestingUser,
     }
-    if(queryOptions.done) filters['done'] = queryOptions.done
-    console.log(filters)
+    if ('done' in queryOptions) filters['done'] = queryOptions.done;
+    if ('title' in queryOptions) {
+      console.log("tem", queryOptions.title);
+      const title = queryOptions.title;
+      queryBuilder.where({ title: Like(`%${title}%`)  });
+    }
     queryBuilder
-      .where(filters)
+      .andWhere(filters)
       .orderBy(queryOptions.orderBy, queryOptions.order)
       .skip(queryOptions.skip)
       .take(queryOptions.take)
