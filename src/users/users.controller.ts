@@ -1,9 +1,11 @@
 import {
   Body,
   Controller,
-  Get, HttpStatus,
+  Get,
+  HttpStatus,
   Param,
-  Patch, Res,
+  Patch,
+  Res,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -20,7 +22,7 @@ export class UsersController {
     @Param('id') id: string
   ): Promise<Response<User>> {
     const user = await this.usersService.findOneById(+id);
-    return response.status(HttpStatus.OK).json(user)
+    return response.status(HttpStatus.OK).json(user);
   }
 
   @Patch(':id')
@@ -32,5 +34,4 @@ export class UsersController {
     await this.usersService.update(+id, updateUserDto);
     return response.status(HttpStatus.ACCEPTED).send();
   }
-
 }

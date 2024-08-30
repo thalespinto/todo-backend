@@ -16,7 +16,7 @@ export class AuthService {
   async register(@Body() createUserDto: CreateUserDto) {
     createUserDto.password = await bcrypt.hash(createUserDto.password, 12);
     const user = await this.usersService.createUser(createUserDto);
-    return plainToClass(User, user)
+    return plainToClass(User, user);
   }
 
   async signIn(user: Pick<User, 'email' | 'password'>) {
@@ -25,9 +25,8 @@ export class AuthService {
       throw new UnauthorizedException();
     }
 
-    const jwt = await this.jwtService.signAsync({id: _user.id});
+    const jwt = await this.jwtService.signAsync({ id: _user.id });
 
     return { access_token: jwt };
   }
-
 }

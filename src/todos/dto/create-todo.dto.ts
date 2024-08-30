@@ -2,7 +2,6 @@ import { IsBoolean, IsDate, IsOptional, IsString } from 'class-validator';
 import { Type } from 'class-transformer';
 
 export class CreateTodoDto {
-
   @IsString()
   readonly title: string;
 
@@ -16,5 +15,4 @@ export class CreateTodoDto {
   @IsDate()
   @Type(() => Date)
   readonly deadline: Date;
-
 }
