@@ -1,4 +1,8 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { UpdateTodoDto } from './dto/update-todo.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -15,14 +19,12 @@ export class TodosService {
     @InjectRepository(Todo)
     private readonly todosRepository: Repository<Todo>,
     private readonly usersService: UsersService
-  ) {
-  }
+  ) {}
 
   async create(
     createTodoDto: CreateTodoDto,
     requestingUser: number
   ): Promise<Todo> {
-
     const user = await this.usersService.findOneById(requestingUser);
     const todo = this.todosRepository.create({
       ...createTodoDto,
@@ -34,30 +36,32 @@ export class TodosService {
 
   async findAllByUserId(
     queryOptions: TodoQueryOptionsDto,
-    requestingUser: number): Promise<PageDto<Todo>> {
-
-    const queryBuilder = this.todosRepository.createQueryBuilder("todos")
+    requestingUser: number
+  ): Promise<PageDto<Todo>> {
+    const queryBuilder = this.todosRepository.createQueryBuilder('todos');
     const filters = {
       user: requestingUser,
-    }
+    };
     if ('done' in queryOptions) filters['done'] = queryOptions.done;
     if ('title' in queryOptions) {
       const title = queryOptions.title;
-      queryBuilder.where({ title: Like(`%${title}%`)  });
+      queryBuilder.where({ title: Like(`%${title}%`) });
     }
     queryBuilder
       .andWhere(filters)
       .orderBy(queryOptions.orderBy, queryOptions.order)
       .skip(queryOptions.skip)
-      .take(queryOptions.take)
+      .take(queryOptions.take);
 
     const itemCount = await queryBuilder.getCount();
-    const { entities } = await queryBuilder.getRawAndEntities()
+    const { entities } = await queryBuilder.getRawAndEntities();
 
-    const pageMetaDto =
-      new PageMetaDto({ itemCount, pageOptionsDto: queryOptions });
+    const pageMetaDto = new PageMetaDto({
+      itemCount,
+      pageOptionsDto: queryOptions,
+    });
 
-    return new PageDto(entities, pageMetaDto)
+    return new PageDto(entities, pageMetaDto);
   }
 
   async update(
@@ -67,16 +71,18 @@ export class TodosService {
   ): Promise<void> {
     const todo = await this.todosRepository.findOne({
       where: { id },
-      relations: ['user']
+      relations: ['user'],
     });
-    if(!todo) throw new NotFoundException("Todo not found!")
-    if(todo.user.id !== requestingUser)
-      throw new BadRequestException("Trying to modifies todo from another user.")
+    if (!todo) throw new NotFoundException('Todo not found!');
+    if (todo.user.id !== requestingUser)
+      throw new BadRequestException(
+        'Trying to modifies todo from another user.'
+      );
 
     const updatedTodo = {
       ...updateTodoDto,
-      user: todo.user
-    }
+      user: todo.user,
+    };
     await this.todosRepository.update(id, updatedTodo);
     return;
   }
@@ -84,11 +90,11 @@ export class TodosService {
   async remove(id: number, requestingUser: number): Promise<void> {
     const todo = await this.todosRepository.findOne({
       where: { id },
-      relations: ['user']
-    })
-    if(!todo) throw new NotFoundException('Todo not found');
-    if(requestingUser !== todo.user.id)
-      throw new BadRequestException("Trying to delete another user todo.")
+      relations: ['user'],
+    });
+    if (!todo) throw new NotFoundException('Todo not found');
+    if (requestingUser !== todo.user.id)
+      throw new BadRequestException('Trying to delete another user todo.');
 
     await this.todosRepository.remove(todo);
     return;

@@ -1,22 +1,25 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn, CreateDateColumn } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+} from 'typeorm';
 import { User } from '../../users/entities/user.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('todos')
 export class Todo {
-
   @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
   @ApiProperty()
-  @ManyToOne(
-    () => User,
-      user => user.todos,
-    {
-      nullable: false,
-      onDelete: 'CASCADE'
-    })
+  @ManyToOne(() => User, (user) => user.todos, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user' })
   user: User;
 
@@ -37,10 +40,18 @@ export class Todo {
   deadline: Date;
 
   @ApiProperty()
-  @CreateDateColumn({ type: 'timestamp', name: 'created_at', nullable: false })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'created_at',
+    nullable: false,
+  })
   createdAt: Date;
 
   @ApiProperty()
-  @CreateDateColumn({ type: 'timestamp', name: 'updated_at', nullable: false })
+  @CreateDateColumn({
+    type: 'timestamp',
+    name: 'updated_at',
+    nullable: false,
+  })
   updatedAt: Date;
 }

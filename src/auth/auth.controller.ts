@@ -13,7 +13,7 @@ export class AuthController {
   @Post('register')
   async register(
     @Res() response: Response,
-    @Body() createUserDto: CreateUserDto,
+    @Body() createUserDto: CreateUserDto
   ) {
     const createdUser = await this.authService.register(createUserDto);
     return response.status(HttpStatus.CREATED).json(createdUser);
@@ -23,7 +23,7 @@ export class AuthController {
   @Post('login')
   async signIn(
     @Res() response: Response,
-    @Body() user: Pick<User, 'email' | 'password'>,
+    @Body() user: Pick<User, 'email' | 'password'>
   ) {
     const successResp = await this.authService.signIn(user);
     return response.status(HttpStatus.ACCEPTED).json(successResp);

@@ -22,14 +22,14 @@ import { TodosModule } from './todos/todos.module';
     }),
     UsersModule,
     AuthModule,
-    TodosModule
+    TodosModule,
   ],
   controllers: [],
   providers: [
     {
       provide: APP_GUARD,
       useClass: AuthGuard,
-    }
+    },
   ],
 })
 export class AppModule {}

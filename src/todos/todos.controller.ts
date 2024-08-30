@@ -7,7 +7,8 @@ import {
   Param,
   Delete,
   Res,
-  HttpStatus, Query,
+  HttpStatus,
+  Query,
 } from '@nestjs/common';
 import { TodosService } from './todos.service';
 import { CreateTodoDto } from './dto/create-todo.dto';
@@ -30,7 +31,7 @@ export class TodosController {
   async create(
     @Res() response: Response,
     @Body() createTodoDto: CreateTodoDto,
-    @User() user: UserEntity,
+    @User() user: UserEntity
   ) {
     const createdTodo = await this.todosService.create(createTodoDto, user.id);
     return response.status(HttpStatus.CREATED).json(createdTodo);
@@ -41,10 +42,9 @@ export class TodosController {
   async findAllByUserId(
     @Res() response: Response,
     @Query() QueryDto: TodoQueryOptionsDto,
-    @User() user: UserEntity,
+    @User() user: UserEntity
   ): Promise<Response<PageDto<Todo>>> {
-    const todos =
-      await this.todosService.findAllByUserId(QueryDto, user.id);
+    const todos = await this.todosService.findAllByUserId(QueryDto, user.id);
     return response.status(HttpStatus.OK).json(todos);
   }
 
@@ -54,9 +54,9 @@ export class TodosController {
     @Param('id') id: string,
     @Body() updateTodoDto: UpdateTodoDto,
     @User() user: UserEntity
-  ) :Promise<Response> {
+  ): Promise<Response> {
     await this.todosService.update(+id, updateTodoDto, user.id);
-    return response.status(HttpStatus.ACCEPTED).send()
+    return response.status(HttpStatus.ACCEPTED).send();
   }
 
   @Delete(':id')
@@ -64,7 +64,7 @@ export class TodosController {
     @Res() response: Response,
     @Param('id') id: string,
     @User() user: UserEntity
-  ):Promise<Response> {
+  ): Promise<Response> {
     await this.todosService.remove(+id, user.id);
     return response.status(HttpStatus.NO_CONTENT).send();
   }
