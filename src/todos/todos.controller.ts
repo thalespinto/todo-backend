@@ -18,7 +18,7 @@ import { User as UserEntity } from '../users/entities/user.entity';
 import { Response } from 'express';
 import { PageDto } from '../utils/pagination/page.dto';
 import { Todo } from './entities/todo.entity';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ApiPaginatedResponse } from '../decorators/api-tags.decorator';
 import { TodoQueryOptionsDto } from './dto/query-options.dto';
 
@@ -27,6 +27,11 @@ import { TodoQueryOptionsDto } from './dto/query-options.dto';
 export class TodosController {
   constructor(private readonly todosService: TodosService) {}
 
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'Todo successfully created.',
+    type: Todo,
+  })
   @Post()
   async create(
     @Res() response: Response,

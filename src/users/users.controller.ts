@@ -11,11 +11,17 @@ import { UsersService } from './users.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
 import { Response } from 'express';
+import { ApiResponse } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'User successfully retrieved.',
+    type: User,
+  })
   @Get(':id')
   async findOneById(
     @Res() response: Response,
