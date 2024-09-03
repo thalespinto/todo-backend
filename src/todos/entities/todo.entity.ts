@@ -15,7 +15,7 @@ export class Todo {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ApiProperty()
+  @ApiProperty({ type: () => User })
   @ManyToOne(() => User, (user) => user.todos, {
     nullable: false,
     onDelete: 'CASCADE',
